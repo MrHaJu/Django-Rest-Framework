@@ -10,4 +10,8 @@ class ProfileSerializer(serializers.ModelSerializer):
         fields = ['id', 'owner', 'created_at', 'updated_at', 'name',
                   'content', 'image'
         ]
-        
+
+class PostSerializer(serializers.ModelSerializer):
+    profil_image = serializers.ReadOnlyField(
+        source='owner.profile.image.url'
+    )

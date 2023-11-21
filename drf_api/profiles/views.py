@@ -6,6 +6,7 @@ from .models import Profile
 from .serializers import ProfileSerializer
 from drf_api.permissions import IsOwnerOrReadOnly
 
+
 class ProfileList(APIView):
     """
     List all profiles
@@ -21,7 +22,8 @@ class ProfileList(APIView):
 
 class ProfileDetail(APIView):
     serializer_class = ProfileSerializer
-    serializer_classes = [IsOwnerOrReadOnly]
+    permission_classes = [IsOwnerOrReadOnly]
+
     def get_object(self, pk):
         try:
             profile = Profile.objects.get(pk=pk)
@@ -29,17 +31,19 @@ class ProfileDetail(APIView):
             return profile
         except Profile.DoesNotExist:
             raise Http404
-    
+
     def get(self, request, pk):
         profile = self.get_object(pk)
         serializer = ProfileSerializer(
-            profile, context={'request': request})
+            profile, context={'request': request}
+        )
         return Response(serializer.data)
 
     def put(self, request, pk):
         profile = self.get_object(pk)
         serializer = ProfileSerializer(
-            profile, data=request.data, context={'request': request})
+            profile, data=request.data, context={'request': request}
+        )
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
